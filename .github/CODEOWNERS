@@ -1,0 +1,14 @@
+# Code Owners for Rwanda Cultural Archives
+# These owners will be requested for review on all pull requests.
+# Update @teammateusername once your teammate's GitHub handle is confirmed.
+
+* @abu00123 @olaniyiolufemi
+
+# DevOps configurations owned by Abraham
+.gitignore @abu00123
+.github/ @abu00123
+docs/ @abu00123
+
+# Application code owned by Olaniyi
+frontend/ @olaniyiolufemi
+backend/ @olaniyiolufemi

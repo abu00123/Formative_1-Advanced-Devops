@@ -1,53 +1,135 @@
-# Formative_1-Advanced-Devops
-# Rwandan Archives
+# Rwanda Cultural Archives
 
-> A digital home for Rwanda's cultural heritage.
+> Preserving and sharing Rwanda's rich cultural heritage — digitally.
 
-## Overview
-
-A simple platform that centralizes Rwandan cultural and academic resources — oral histories, research papers, traditions, and historical records — into one searchable, well-organized digital archive.
+---
 
 ## Problem Statement
 
-Rwanda's cultural knowledge is scattered across institutions, private collections, and undigitized formats, making it hard for researchers, students, and the public to access. Much of this material risks being lost or remaining inaccessible. This platform brings these resources together in a single, accessible place.
+Rwanda's cultural knowledge — traditions, oral histories, artifacts, and stories — risks being lost as it is scattered across physical archives, undocumented or inaccessible to the public. There is no centralized digital platform where Rwandans, researchers, and the diaspora can easily discover, explore, and contribute to this heritage.
 
 ## Target Users
 
-- **Researchers and academics** studying Rwandan history, culture, and society
-- **Students and educators** needing reliable primary and secondary sources
-- **Cultural institutions and archivists** preserving and sharing heritage materials
-- **The general public** interested in Rwandan culture and history
+- Rwandan students and researchers
+- Cultural institutions and museums
+- Rwandans in the diaspora
+- International researchers studying African heritage
 
 ## Core Features
 
-- **Read research papers** — View and read full academic papers and cultural documents directly within the platform.
-- **Search and find** — Keyword search with filters (e.g., by date) to quickly locate relevant materials.
-- **Browse** — Explore the archie by category, collection, or topic without a specific search query.
-- **Administrator access** — A secure admin panel for uploading, editing, organizing, and managing archive content and user permissions.
+1. **Browse Archives** — Explore cultural items organized by category (art, music, traditions, history)
+2. **View Item Details** — See descriptions, images, and historical context for each archive entry
+3. **Search** — Find cultural items by keyword or category
+4. **Submit a Cultural Item** — Community members can contribute new entries for review
+5. **About / Contact** — Information about the platform and how to get involved
 
 ## Technology Stack
 
+| Layer     | Technology              |
+|-----------|-------------------------|
+| Frontend  | React.js, CSS           |
+| Backend   | Node.js, Express        |
+| Data      | JSON / MongoDB          |
+| Dev Tools | Git, GitHub, VS Code    |
 
-**Frontend** | React + Tailwind CSS |
-**Backend** | Node.js + Express (or Python / Django) |
-**Database** | PostgreSQL with full-text search (optional: Elasticsearch) |
-**File Storage** | Cloud storage (e.g., AWS S3) for PDFs and documents |
-**Authentication** | JWT-based auth for admin and user roles |
+---
+
+## Repository Structure
+
+```
+Formative_1-Advanced-Devops/
+│
+├── frontend/          # React frontend application
+├── backend/           # Node.js/Express backend API
+├── docs/              # Project documentation
+├── .github/
+│   └── CODEOWNERS     # Code ownership definitions
+├── README.md
+├── LICENSE
+└── .gitignore
+```
+
+---
 
 ## Getting Started
 
+### Prerequisites
+
+- Node.js v18+
+- npm or yarn
+- Git
+
+### Installation
+
 ```bash
 # Clone the repository
-git clone https://github.com/abu00123/Formative_1-Advanced-Devops
-
-# Install dependencies
+git clone https://github.com/<your-username>/Formative_1-Advanced-Devops.git
 cd Formative_1-Advanced-Devops
+
+# Install backend dependencies
+cd backend
 npm install
 
-# Start the development server
+# Install frontend dependencies
+cd ../frontend
+npm install
+```
+
+### Running the Application
+
+```bash
+# Start the backend (from /backend)
+npm start
+
+# Start the frontend (from /frontend)
 npm run dev
 ```
 
-## License   
+The app will be available at `http://localhost:3000`
 
-This project is licensed under the MIT License — see the `LICENSE` file for details.
+---
+
+## Development Workflow
+
+All changes must go through a Pull Request — no direct pushes to `main`.
+
+1. Create a feature branch from `main`
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+2. Make your changes and commit with clear messages
+3. Push the branch and open a Pull Request on GitHub
+4. Request a review from your teammate
+5. Address any review comments
+6. Merge into `main` only after approval
+
+---
+
+## Contributing
+
+See [CONTRIBUTING](docs/CONTRIBUTING.md) for guidelines on submitting issues, opening pull requests, and code style.
+
+---
+
+## Future Enhancements
+
+- OCR support for scanned historical documents
+- Multilingual support (Kinyarwanda, French, English)
+- AI-powered semantic search across archives
+- User accounts with bookmarks and collections
+- Integration with national cultural institutions
+
+---
+
+## Team
+
+| Name       | Role              | GitHub                          |
+|------------|-------------------|---------------------------------|
+| Abraham    | DevOps Lead       | [@abu00123](https://github.com/abu00123) |
+| Olaniyi    | Developer         | [@olaniyiolufemi](https://github.com/olaniyiolufemi) |
+
+---
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
