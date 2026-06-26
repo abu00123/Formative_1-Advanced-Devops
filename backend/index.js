@@ -122,6 +122,78 @@ app.get('/api/archives/:id', async (req, res) => {
   }
 });
 
+app.post('/api/archives', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const { title, author_id, category, century, cover_url, content, rating, reviews_count } = req.body;
+    if (!title) {
+      return res.status(400).json({ error: 'Title is required' });
+    }
+    const result = await db.query(
+      `INSERT INTO archives (title, author_id, category, century, cover_url, content, rating, reviews_count)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title,
+        author_id || null,
+        category || 'Uncategorized',
+        century || 'Unknown',
+        cover_url || '',
+        content || '',
+        rating || 5.0,
+        reviews_count || 0
+      ]
+    );
+    res.status(201).json({ id: result.lastID, success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/archives/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, author_id, category, century, cover_url, content, rating, reviews_count } = req.body;
+
+    const check = await db.query('SELECT * FROM archives WHERE id = ?', [id]);
+    if (check.rows.length === 0) {
+      return res.status(404).json({ error: 'Archive not found' });
+    }
+
+    await db.query(
+      `UPDATE archives 
+       SET title = ?, author_id = ?, category = ?, century = ?, cover_url = ?, content = ?, rating = ?, reviews_count = ?
+       WHERE id = ?`,
+      [
+        title || check.rows[0].title,
+        author_id !== undefined ? author_id : check.rows[0].author_id,
+        category || check.rows[0].category,
+        century || check.rows[0].century,
+        cover_url || check.rows[0].cover_url,
+        content || check.rows[0].content,
+        rating !== undefined ? rating : check.rows[0].rating,
+        reviews_count !== undefined ? reviews_count : check.rows[0].reviews_count,
+        id
+      ]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/archives/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const check = await db.query('SELECT * FROM archives WHERE id = ?', [id]);
+    if (check.rows.length === 0) {
+      return res.status(404).json({ error: 'Archive not found' });
+    }
+    await db.query('DELETE FROM archives WHERE id = ?', [id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/api/requests', async (req, res) => {
   try {
     const result = await db.query('SELECT * FROM requests ORDER BY id DESC LIMIT 5');
