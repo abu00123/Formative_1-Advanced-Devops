@@ -18,7 +18,7 @@ async function seed() {
     [
       'Alexis Kagame',
       'Monsignor Alexis Kagame was a Rwandan scholar, poet, historian and Catholic priest. He wrote extensively in Kinyarwanda and French on history, linguistics, and philosophy.',
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLsnplmk7qcuzfFctdIqDWlEo8_8CMWCtRmiekjJlJhg5ksXg_F0oEIaQ-I971fgEHnFd1ykID-kR2EJP-tk9JZUxQuMOB5URDy8FaWSdy3nKVS4qtpyLbHgrldTwlAfZOG2GsKRUVXsLk/s200/Kagame.jpg',
       4.8,
       1420
     ]
@@ -28,7 +28,7 @@ async function seed() {
     [
       'Louise Mushikiwabo',
       'Rwandan politician and writer, co-author of "Rwandan Ruins, Rwandan Rising", detailing the nation\'s journey and cultural heritage.',
-      'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+      'https://www.francophonie.org/sites/default/files/2023-08/Portrait%20SG.jpg',
       4.5,
       512
     ]
