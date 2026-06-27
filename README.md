@@ -130,6 +130,13 @@ See [CONTRIBUTING](docs/CONTRIBUTING.md) for guidelines on submitting issues, op
 
 ---
 
+## Team Participation Sheet
+
+View our team participation, task allocation, and meeting notes here:
+[Team Participation Sheet](https://docs.google.com/spreadsheets/d/1cYHDG9u3X2Wy7NVIemoLGoKACWh2QblRNxahBFGcwW4/edit?usp=sharing)
+
+---
+
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
