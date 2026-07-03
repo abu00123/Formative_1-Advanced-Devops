@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: rwandan_archives_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_secure_pass_2026
+      POSTGRES_DB: rwandan_archives
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d rwandan_archives" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Express Backend API Service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend
+    container_name: rwandan_archives_backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      DATABASE_URL: postgres://postgres:postgres_secure_pass_2026@db:5432/rwandan_archives
+      JWT_SECRET: rwandan_archives_jwt_secret_key_2026
+      NODE_ENV: development
+    depends_on:
+      db:
+        condition: service_healthy
+    # Command runs migrations, seeds, then boots up the API server
+    command: sh -c "node db/migrate.js && node db/seed.js && node index.js"
+
+  # React + Vite Frontend Service
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+    container_name: rwandan_archives_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
