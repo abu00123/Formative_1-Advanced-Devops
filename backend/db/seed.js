@@ -2,6 +2,12 @@ const bcrypt = require('bcryptjs');
 const { query } = require('./db');
 
 async function seed() {
+  const countRes = await query('SELECT COUNT(*) as count FROM users');
+  const count = parseInt(countRes.rows[0].count || countRes.rows[0]['count(*)'] || 0);
+  if (count > 0) {
+    console.log('Database already seeded. Skipping seeding.');
+    return;
+  }
   await query('DELETE FROM users');
   await query('DELETE FROM authors');
   await query('DELETE FROM archives');
