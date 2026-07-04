@@ -36,6 +36,7 @@ Choose which severity levels of code quality results should block pull request m
 Automatically request Copilot code review
 Request Copilot code review for new pull requests automatically if the author has access to Copilot code review and their premium requests quota has not reached the limit.
 # Code Owners for Rwanda Cultural Archives
+# Updated to include workflows directory
 # These owners will be requested for review on all pull requests.
 # Update @teammateusername once your teammate's GitHub handle is confirmed.
 
