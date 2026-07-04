@@ -42,7 +42,7 @@ Request Copilot code review for new pull requests automatically if the author ha
 
 * @abu00123 @olaniyiolufemi
 
-# DevOps configurations owned by Abraham
+# DevOps configurations and CI workflows owned by Abraham
 .gitignore @abu00123
 .github/ @abu00123
 docs/ @abu00123
