@@ -130,6 +130,43 @@ See [CONTRIBUTING](docs/CONTRIBUTING.md) for guidelines on submitting issues, op
 
 ---
 
+## Docker Setup & Local Development
+
+We use Docker Compose to run the backend, frontend, and PostgreSQL database seamlessly.
+
+### Prerequisites
+
+- Docker & Docker Compose installed locally
+
+### Running the Application
+
+Spin up all services with one command:
+
+```bash
+docker-compose up --build
+```
+
+| Service | URL |
+|---------|-----|
+| Frontend App | http://localhost:5173 |
+| Backend API | http://localhost:5000/api/health |
+| PostgreSQL | localhost:5432 |
+
+### Testing and Linting Locally
+
+```bash
+# Run backend tests
+npm test --prefix backend
+
+# Run backend lint
+npx oxlint backend/
+
+# Run frontend lint
+npm run lint --prefix frontend
+```
+
+---
+
 ## Team Participation Sheet
 
 View our team participation, task allocation, and meeting notes here:

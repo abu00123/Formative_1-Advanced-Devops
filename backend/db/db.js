@@ -1,4 +1,3 @@
-const sqlite3 = require('sqlite3');
 const { Pool } = require('pg');
 require('dotenv').config();
 
@@ -13,6 +12,7 @@ if (process.env.DATABASE_URL) {
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
   });
 } else {
+  const sqlite3 = require('sqlite3');
   sqliteDb = new sqlite3.Database('./archives.db');
 }
 
@@ -46,4 +46,4 @@ function query(text, params = []) {
   });
 }
 
-module.exports = { query, dbType };
+module.exports = { query, dbType, convertPlaceholders };
