@@ -11,19 +11,7 @@ provider "aws" {
   region = var.aws_region
 }
 
-# Get the latest Amazon Linux 2023 AMI
-data "aws_ami" "amazon_linux" {
-  most_recent = true
 
-  owners = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["al2023-ami-*-x86_64"]
-  }
-}
-
-# VPC
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -34,7 +22,6 @@ resource "aws_vpc" "main" {
   }
 }
 
-# Public Subnet
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.subnet_cidr
@@ -46,7 +33,7 @@ resource "aws_subnet" "public" {
   }
 }
 
-# Internet Gateway
+
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
@@ -69,13 +56,11 @@ resource "aws_route_table" "public" {
   }
 }
 
-# Associate Route Table with Subnet
 resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
 
-# Security Group
 resource "aws_security_group" "web" {
   name        = "${var.project_name}-sg"
   description = "Allow SSH, HTTP, and HTTPS"
@@ -118,9 +103,8 @@ resource "aws_security_group" "web" {
   }
 }
 
-# EC2 Instance
 resource "aws_instance" "web" {
-  ami                    = data.aws_ami.amazon_linux.id
+  ami                    = "ami-0e86e20dae9224db8"
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.web.id]

@@ -1,0 +1,102 @@
+---
+- name: Configure Server and Deploy App
+  hosts: web
+  become: yes
+  tasks:
+    - name: Update apt repository cache
+      apt:
+        update_cache: yes
+
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Install Docker Compose plugin
+      apt:
+        name: docker-compose-v2
+        state: present
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add default user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Install firewalld
+      apt:
+        name: firewalld
+        state: present
+
+    - name: Start and enable firewalld
+      systemd:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Allow SSH, HTTP, and HTTPS traffic
+      firewalld:
+        service: "{{ item }}"
+        state: enabled
+        permanent: yes
+        immediate: yes
+      loop:
+        - ssh
+        - http
+        - https
+
+    - name: Enforce SSH Hardening - Disable Password Authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+      notify: Restart SSH Service
+
+    - name: Enforce SSH Hardening - Disable Root Login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin no'
+      notify: Restart SSH Service
+
+    - name: Create application directory
+      file:
+        path: /var/www/rwandan-archives
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: docker
+        mode: '0775'
+
+    - name: Copy project files to server
+      copy:
+        src: ../
+        dest: /var/www/rwandan-archives/
+        owner: "{{ ansible_user }}"
+        group: docker
+        mode: '0755'
+        exclude_spec:
+          - "**/node_modules"
+          - "**/.git"
+          - "**/terraform"
+
+    - name: Boot application via Docker Compose
+      command: docker compose up --build -d
+      args:
+        chdir: /var/www/rwandan-archives
+
+  handlers:
+    - name: Restart SSH Service
+      systemd:
+        name: sshd
+        state: restarted
