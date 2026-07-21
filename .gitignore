@@ -226,6 +226,13 @@ coverage/
 .env.test.local
 .env.production.local
 
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform.lock.hcl
+
 # OS files
 .DS_Store
 Thumbs.db
