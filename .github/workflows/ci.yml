@@ -77,4 +77,15 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: terraform
-          soft_fail: true
+          soft_fail: false
+
+      - name: Build Backend Image for Scanning
+        run: docker build --target backend -t rwandan-archives-backend:scan .
+
+      - name: Container Image Scan (Trivy)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: rwandan-archives-backend:scan
+          format: table
+          exit-code: 1
+          severity: CRITICAL
