@@ -83,7 +83,7 @@ jobs:
         run: docker build --target backend -t rwandan-archives-backend:scan .
 
       - name: Container Image Scan (Trivy)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.20.0
         with:
           image-ref: rwandan-archives-backend:scan
           format: table
