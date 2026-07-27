@@ -74,10 +74,9 @@ jobs:
           npm audit --prefix frontend --audit-level=high
 
       - name: IaC Scan (tfsec)
-        uses: aquasecurity/tfsec-action@v1.0.0
-        with:
-          working_directory: terraform
-          soft_fail: false
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+          tfsec terraform --no-color
 
       - name: Build Backend Image for Scanning
         run: docker build --target backend -t rwandan-archives-backend:scan .
