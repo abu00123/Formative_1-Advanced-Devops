@@ -1,0 +1,76 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build, Push, and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: |
+          npm ci --prefix backend
+          npm ci --prefix frontend
+
+      - name: Run Backend Tests
+        run: npm test --prefix backend
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push Backend Image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build --target backend -t $ECR_REGISTRY/rwanda-cultural-archives:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/rwanda-cultural-archives:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/rwanda-cultural-archives:$IMAGE_TAG $ECR_REGISTRY/rwanda-cultural-archives:latest
+          docker push $ECR_REGISTRY/rwanda-cultural-archives:latest
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/rwanda-archives-key.pem
+          chmod 600 ~/.ssh/rwanda-archives-key.pem
+          ssh-keyscan -H ${{ secrets.BASTION_IP }} >> ~/.ssh/known_hosts
+
+      - name: Install Ansible
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ansible
+
+      - name: Run Ansible Playbook
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          ansible-playbook ansible/deploy.yml \
+            -i ansible/inventory.ini \
+            --private-key ~/.ssh/rwanda-archives-key.pem \
+            -e "ecr_image=$ECR_REGISTRY/rwanda-cultural-archives:$IMAGE_TAG" \
+            -e "aws_region=us-east-1"
