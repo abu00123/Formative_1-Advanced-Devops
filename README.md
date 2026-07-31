@@ -25,12 +25,16 @@ Rwanda's cultural knowledge — traditions, oral histories, artifacts, and stori
 
 ## Technology Stack
 
-| Layer     | Technology              |
-|-----------|-------------------------|
-| Frontend  | React.js, CSS           |
-| Backend   | Node.js, Express        |
-| Data      | JSON / MongoDB          |
-| Dev Tools | Git, GitHub, VS Code    |
+| Layer       | Technology                        |
+|-------------|-----------------------------------|
+| Frontend    | React.js, CSS                     |
+| Backend     | Node.js, Express                  |
+| Database    | PostgreSQL (AWS RDS)               |
+| Container   | Docker, Amazon ECR                |
+| Infra       | Terraform, AWS (VPC, EC2, RDS)    |
+| CI/CD       | GitHub Actions                    |
+| Config Mgmt | Ansible                           |
+| Dev Tools   | Git, GitHub, VS Code              |
 
 ---
 
@@ -41,9 +45,15 @@ Formative_1-Advanced-Devops/
 │
 ├── frontend/          # React frontend application
 ├── backend/           # Node.js/Express backend API
+├── terraform/         # AWS infrastructure (VPC, EC2, RDS, ECR)
+├── ansible/           # Deployment playbooks
 ├── docs/              # Project documentation
 ├── .github/
+│   ├── workflows/     # CI/CD pipelines (ci.yml, cd.yml)
 │   └── CODEOWNERS     # Code ownership definitions
+├── Dockerfile
+├── docker-compose.yml
+├── CHANGELOG.md
 ├── README.md
 ├── LICENSE
 └── .gitignore
@@ -55,7 +65,7 @@ Formative_1-Advanced-Devops/
 
 ### Prerequisites
 
-- Node.js v18+
+- Node.js v24+
 - npm or yarn
 - Git
 
@@ -63,7 +73,7 @@ Formative_1-Advanced-Devops/
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/Formative_1-Advanced-Devops.git
+git clone https://github.com/abu00123/Formative_1-Advanced-Devops.git
 cd Formative_1-Advanced-Devops
 
 # Install backend dependencies
@@ -164,6 +174,38 @@ npx oxlint backend/
 # Run frontend lint
 npm run lint --prefix frontend
 ```
+
+---
+
+## CI/CD Pipeline
+
+Two GitHub Actions workflows handle automation:
+
+| Workflow | Trigger | Jobs |
+|----------|---------|------|
+| `ci.yml` | Push / PR to any branch | Lint, test, Docker build, security scan (npm audit, tfsec, Trivy) |
+| `cd.yml` | Push to `main` | Build & push image to ECR, deploy via Ansible over bastion SSH |
+
+Required GitHub Secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `BASTION_IP`, `APP_VM_IP`, `SSH_PRIVATE_KEY`.
+
+---
+
+## AWS Infrastructure
+
+Provisioned via Terraform in `us-east-1`:
+
+| Resource | Details |
+|----------|---------|
+| VPC | 10.0.0.0/16 |
+| Public Subnet | Bastion host |
+| Private Subnet | App VM (backend) |
+| DB Subnet | RDS PostgreSQL 16 (db.t3.micro) |
+| ECR | `rwanda-cultural-archives` |
+| Bastion SG | SSH from internet |
+| Web SG | SSH from bastion only |
+| RDS SG | Port 5432 from web SG only |
+
+See [`terraform/README.md`](terraform/README.md) for setup and teardown instructions.
 
 ---
 
