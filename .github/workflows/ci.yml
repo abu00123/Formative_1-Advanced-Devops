@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'npm'
           cache-dependency-path: |
             backend/package-lock.json
@@ -57,7 +57,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'npm'
           cache-dependency-path: |
             backend/package-lock.json
@@ -74,7 +74,17 @@ jobs:
           npm audit --prefix frontend --audit-level=high
 
       - name: IaC Scan (tfsec)
-        uses: aquasecurity/tfsec-action@v1.0.0
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+          tfsec terraform --no-color --minimum-severity CRITICAL
+
+      - name: Build Backend Image for Scanning
+        run: docker build --target backend -t rwandan-archives-backend:scan .
+
+      - name: Container Image Scan (Trivy)
+        uses: aquasecurity/trivy-action@master
         with:
-          working_directory: terraform
-          soft_fail: true
+          image-ref: rwandan-archives-backend:scan
+          format: table
+          exit-code: 1
+          severity: CRITICAL
