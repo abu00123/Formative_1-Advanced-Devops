@@ -70,4 +70,5 @@ jobs:
             -i ansible/inventory.ini \
             --ssh-extra-args="-o ProxyJump=ubuntu@${{ secrets.BASTION_IP }} -o StrictHostKeyChecking=no" \
             -e "ecr_image=$ECR_REGISTRY/rwanda-cultural-archives:$IMAGE_TAG" \
-            -e "aws_region=us-east-1"
+            -e "aws_region=us-east-1" \
+            -e "app_vm_ip=${{ secrets.APP_VM_IP }}"
