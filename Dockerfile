@@ -1,6 +1,9 @@
 # Use a specific, official Node.js base image (slim version for reduced size and security)
 FROM node:24-alpine AS base
 
+# Upgrade npm to get patched node-tar (fixes CVE-2026-59873)
+RUN npm install -g npm@latest
+
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
