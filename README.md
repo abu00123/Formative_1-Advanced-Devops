@@ -190,6 +190,42 @@ Required GitHub Secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `BASTION_
 
 ---
 
+## Architecture
+
+```
+                        ┌─────────────────────────────────────────────────────┐
+                        │                   AWS us-east-1                     │
+                        │                                                     │
+  Developer             │   ┌─────────────┐        ┌──────────────────────┐  │
+  git push ────────────►│   │Public Subnet│        │   Private Subnet     │  │
+       │                │   │             │  SSH   │                      │  │
+       │                │   │  Bastion    │───────►│     App VM (EC2)     │  │
+       │                │   │  Host (EC2) │        │   Docker Container   │  │
+       ▼                │   └─────────────┘        │   Node.js Backend    │  │
+  GitHub Actions        │                          └──────────┬───────────┘  │
+  ┌──────────────┐      │   ┌─────────────┐                   │              │
+  │  CI Pipeline │      │   │  Amazon ECR │◄──── push image   │              │
+  │  - lint      │      │   │  (registry) │                   │              │
+  │  - test      │      │   └─────────────┘              ┌────▼─────────┐   │
+  │  - tfsec     │      │                                │  DB Subnet   │   │
+  │  - trivy     │      │                                │  RDS Postgres│   │
+  └──────┬───────┘      │                                └──────────────┘   │
+         │              └─────────────────────────────────────────────────────┘
+         ▼
+  CD Pipeline
+  - push to ECR
+  - ansible deploy
+    via bastion SSH
+```
+
+---
+
+## Live Application
+
+> **URL:** `http://<BASTION_IP>:5000/api/health` *(update after deployment)*
+
+---
+
 ## AWS Infrastructure
 
 Provisioned via Terraform in `us-east-1`:
